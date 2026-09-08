@@ -20,6 +20,14 @@ namespace CareerMind.Infrastructure.Data
         public DbSet<JobSkill> JobSkills { get; set; } = null!;
         public DbSet<JobApplication> JobApplications { get; set; } = null!;
         public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
+        
+        public DbSet<Education> Educations { get; set; } = null!;
+        public DbSet<WorkExperience> WorkExperiences { get; set; } = null!;
+        public DbSet<Certification> Certifications { get; set; } = null!;
+        public DbSet<Language> Languages { get; set; } = null!;
+        public DbSet<CandidateLanguage> CandidateLanguages { get; set; } = null!;
+        public DbSet<CareerPreference> CareerPreferences { get; set; } = null!;
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,19 +36,63 @@ namespace CareerMind.Infrastructure.Data
             // Apply configurations from current assembly
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-            // M-to-M for CandidateSkill
+            // Indexes and Unique Constraints
             modelBuilder.Entity<CandidateSkill>()
-                .HasKey(cs => new { cs.CandidateProfileId, cs.SkillId });
+                .HasIndex(cs => new { cs.CandidateProfileId, cs.SkillId })
+                .IsUnique();
                 
+            modelBuilder.Entity<CandidateLanguage>()
+                .HasIndex(cl => new { cl.CandidateProfileId, cl.LanguageId })
+                .IsUnique();
+
+            // CandidateProfile relationships
+            modelBuilder.Entity<CandidateProfile>()
+                .HasOne(cp => cp.CareerPreference)
+                .WithOne(p => p.CandidateProfile)
+                .HasForeignKey<CareerPreference>(p => p.CandidateProfileId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<CandidateSkill>()
                 .HasOne(cs => cs.CandidateProfile)
                 .WithMany(cp => cp.CandidateSkills)
-                .HasForeignKey(cs => cs.CandidateProfileId);
+                .HasForeignKey(cs => cs.CandidateProfileId)
+                .OnDelete(DeleteBehavior.Cascade);
                 
             modelBuilder.Entity<CandidateSkill>()
                 .HasOne(cs => cs.Skill)
                 .WithMany(s => s.CandidateSkills)
-                .HasForeignKey(cs => cs.SkillId);
+                .HasForeignKey(cs => cs.SkillId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<CandidateLanguage>()
+                .HasOne(cl => cl.CandidateProfile)
+                .WithMany(cp => cp.CandidateLanguages)
+                .HasForeignKey(cl => cl.CandidateProfileId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<CandidateLanguage>()
+                .HasOne(cl => cl.Language)
+                .WithMany(l => l.CandidateLanguages)
+                .HasForeignKey(cl => cl.LanguageId)
+                .OnDelete(DeleteBehavior.Cascade);
+                
+            modelBuilder.Entity<Education>()
+                .HasOne(e => e.CandidateProfile)
+                .WithMany(cp => cp.Educations)
+                .HasForeignKey(e => e.CandidateProfileId)
+                .OnDelete(DeleteBehavior.Cascade);
+                
+            modelBuilder.Entity<WorkExperience>()
+                .HasOne(w => w.CandidateProfile)
+                .WithMany(cp => cp.WorkExperiences)
+                .HasForeignKey(w => w.CandidateProfileId)
+                .OnDelete(DeleteBehavior.Cascade);
+                
+            modelBuilder.Entity<Certification>()
+                .HasOne(c => c.CandidateProfile)
+                .WithMany(cp => cp.Certifications)
+                .HasForeignKey(c => c.CandidateProfileId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // M-to-M for JobSkill
             modelBuilder.Entity<JobSkill>()

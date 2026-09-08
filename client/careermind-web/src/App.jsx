@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { ProtectedRoute } from './routes/ProtectedRoutes';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import CandidateDashboard from './pages/Candidate/CandidateDashboard';
 
 const Home = () => {
     const { user, logout } = useAuth();
@@ -30,7 +31,6 @@ const Home = () => {
 
 // Placeholder dashboards
 const AdminDashboard = () => <h2>Admin Dashboard (Protected)</h2>;
-const CandidateDashboard = () => <h2>Candidate Dashboard (Protected)</h2>;
 const EmployerDashboard = () => <h2>Employer Dashboard (Protected)</h2>;
 
 function App() {

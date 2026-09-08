@@ -43,6 +43,7 @@ builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.JwtBearer
 builder.Services.AddScoped<CareerMind.Application.Interfaces.ITokenService, CareerMind.Infrastructure.Identity.TokenService>();
 builder.Services.AddScoped<CareerMind.Application.Interfaces.IPasswordHasher, CareerMind.Infrastructure.Identity.PasswordHasher>();
 builder.Services.AddScoped<CareerMind.Application.Interfaces.IAuthService, CareerMind.Infrastructure.Identity.AuthService>();
+builder.Services.AddScoped<CareerMind.Application.Interfaces.ICandidateProfileService, CareerMind.Infrastructure.Services.CandidateProfileService>();
 
 // Configure Swagger
 builder.Services.AddEndpointsApiExplorer();
@@ -95,14 +96,20 @@ if (app.Environment.IsDevelopment())
 }
 
 // Ensure database is created/migrated at startup (for dev purposes)
-/*
+// Ensure database is created/migrated at startup (for dev purposes)
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<CareerMindDbContext>();
     // Make sure we apply migrations
-    // dbContext.Database.Migrate(); 
+    dbContext.Database.Migrate(); 
+    
+    // Seed Data
+    try {
+        CareerMind.Infrastructure.Data.Seed.CareerMindDataSeeder.SeedAsync(dbContext).Wait();
+    } catch(Exception ex) {
+        Console.WriteLine(ex.Message);
+    }
 }
-*/
 
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();

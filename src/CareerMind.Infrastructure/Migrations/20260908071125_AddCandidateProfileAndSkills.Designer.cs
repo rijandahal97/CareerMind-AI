@@ -4,6 +4,7 @@ using CareerMind.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CareerMind.Infrastructure.Migrations
 {
     [DbContext(typeof(CareerMindDbContext))]
-    partial class CareerMindDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260908071125_AddCandidateProfileAndSkills")]
+    partial class AddCandidateProfileAndSkills
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
