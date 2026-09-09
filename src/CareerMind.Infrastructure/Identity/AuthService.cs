@@ -59,7 +59,7 @@ namespace CareerMind.Infrastructure.Identity
             }
             else if (request.Role == "Employer")
             {
-                user.Company = new Company { Name = request.FirstName + " Company" }; // Placeholder logic
+                user.EmployerProfile = new EmployerProfile { CompanyName = request.FirstName + " Company" }; // Placeholder logic
             }
 
             _context.Users.Add(user);

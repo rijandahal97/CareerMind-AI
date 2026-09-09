@@ -15,10 +15,12 @@ namespace CareerMind.Infrastructure.Data
         public DbSet<CandidateProfile> CandidateProfiles { get; set; } = null!;
         public DbSet<Skill> Skills { get; set; } = null!;
         public DbSet<CandidateSkill> CandidateSkills { get; set; } = null!;
-        public DbSet<Company> Companies { get; set; } = null!;
+        public DbSet<EmployerProfile> EmployerProfiles { get; set; } = null!;
         public DbSet<Job> Jobs { get; set; } = null!;
+        public DbSet<JobCategory> JobCategories { get; set; } = null!;
         public DbSet<JobSkill> JobSkills { get; set; } = null!;
         public DbSet<JobApplication> JobApplications { get; set; } = null!;
+        public DbSet<SavedJob> SavedJobs { get; set; } = null!;
         public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
         
         public DbSet<Education> Educations { get; set; } = null!;
@@ -115,17 +117,31 @@ namespace CareerMind.Infrastructure.Data
                 .HasForeignKey<CandidateProfile>(c => c.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // 1-to-1 User <-> Company
+            // 1-to-1 User <-> EmployerProfile
             modelBuilder.Entity<User>()
-                .HasOne(u => u.Company)
+                .HasOne(u => u.EmployerProfile)
                 .WithOne(c => c.User)
-                .HasForeignKey<Company>(c => c.UserId)
+                .HasForeignKey<EmployerProfile>(c => c.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Job to EmployerProfile
+            modelBuilder.Entity<Job>()
+                .HasOne(j => j.EmployerProfile)
+                .WithMany(ep => ep.Jobs)
+                .HasForeignKey(j => j.EmployerProfileId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Job to JobCategory
+            modelBuilder.Entity<Job>()
+                .HasOne(j => j.JobCategory)
+                .WithMany(jc => jc.Jobs)
+                .HasForeignKey(j => j.JobCategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // JobApplication to Job
             modelBuilder.Entity<JobApplication>()
                 .HasOne(ja => ja.Job)
-                .WithMany(j => j.Applications)
+                .WithMany(j => j.JobApplications)
                 .HasForeignKey(ja => ja.JobId)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -135,6 +151,26 @@ namespace CareerMind.Infrastructure.Data
                 .WithMany(cp => cp.JobApplications)
                 .HasForeignKey(ja => ja.CandidateProfileId)
                 .OnDelete(DeleteBehavior.NoAction);
+                
+            modelBuilder.Entity<JobApplication>()
+                .HasIndex(ja => new { ja.CandidateProfileId, ja.JobId })
+                .IsUnique();
+
+            // SavedJob configuration
+            modelBuilder.Entity<SavedJob>()
+                .HasKey(sj => new { sj.CandidateProfileId, sj.JobId });
+                
+            modelBuilder.Entity<SavedJob>()
+                .HasOne(sj => sj.CandidateProfile)
+                .WithMany()
+                .HasForeignKey(sj => sj.CandidateProfileId)
+                .OnDelete(DeleteBehavior.NoAction);
+                
+            modelBuilder.Entity<SavedJob>()
+                .HasOne(sj => sj.Job)
+                .WithMany(j => j.SavedJobs)
+                .HasForeignKey(sj => sj.JobId)
+                .OnDelete(DeleteBehavior.Cascade);
                 
             // Setup User/Role constraint
             modelBuilder.Entity<User>()

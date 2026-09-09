@@ -13,7 +13,7 @@ namespace CareerMind.Domain.Entities
         public Role Role { get; set; } = null!;
 
         public CandidateProfile? CandidateProfile { get; set; }
-        public Company? Company { get; set; }
+        public EmployerProfile? EmployerProfile { get; set; }
         public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     }
 }

@@ -44,6 +44,8 @@ builder.Services.AddScoped<CareerMind.Application.Interfaces.ITokenService, Care
 builder.Services.AddScoped<CareerMind.Application.Interfaces.IPasswordHasher, CareerMind.Infrastructure.Identity.PasswordHasher>();
 builder.Services.AddScoped<CareerMind.Application.Interfaces.IAuthService, CareerMind.Infrastructure.Identity.AuthService>();
 builder.Services.AddScoped<CareerMind.Application.Interfaces.ICandidateProfileService, CareerMind.Infrastructure.Services.CandidateProfileService>();
+builder.Services.AddScoped<CareerMind.Application.Interfaces.IEmployerProfileService, CareerMind.Infrastructure.Services.EmployerProfileService>();
+builder.Services.AddScoped<CareerMind.Application.Interfaces.IJobService, CareerMind.Infrastructure.Services.JobService>();
 
 // Configure Swagger
 builder.Services.AddEndpointsApiExplorer();

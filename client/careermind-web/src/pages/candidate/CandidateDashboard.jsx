@@ -3,6 +3,10 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { candidateService } from '../../services/candidate';
 import { useAuth } from '../../context/AuthContext';
 import './Candidate.css';
+import CandidateJobs from './CandidateJobs';
+import CandidateJobDetails from './CandidateJobDetails';
+import CandidateApplications from './CandidateApplications';
+import CandidateSavedJobs from './CandidateSavedJobs';
 
 const ProfileSection = ({ initialData, fetchProfile }) => {
     const [formData, setFormData] = useState(initialData || {});
@@ -203,6 +207,9 @@ const CandidateDashboard = () => {
         { path: 'skills', label: 'Skills' },
         { path: 'education', label: 'Education' },
         { path: 'experience', label: 'Experience' },
+        { path: 'jobs', label: 'Find Jobs' },
+        { path: 'applications', label: 'My Applications' },
+        { path: 'saved-jobs', label: 'Saved Jobs' },
     ];
 
     if (loading) return <div className="loader">Loading...</div>;
@@ -245,6 +252,10 @@ const CandidateDashboard = () => {
                         <Route path="skills" element={<SkillsSection skills={profile?.skills || []} fetchProfile={fetchProfile} />} />
                         <Route path="education" element={<EducationSection educations={profile?.educations || []} fetchProfile={fetchProfile} />} />
                         <Route path="experience" element={<h2>Experience Section (Coming Soon)</h2>} />
+                        <Route path="jobs" element={<CandidateJobs />} />
+                        <Route path="jobs/:id" element={<CandidateJobDetails />} />
+                        <Route path="applications" element={<CandidateApplications />} />
+                        <Route path="saved-jobs" element={<CandidateSavedJobs />} />
                     </Routes>
                 </div>
             </main>

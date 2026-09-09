@@ -16,11 +16,13 @@ namespace CareerMind.API.Controllers
     public class CandidatesController : ControllerBase
     {
         private readonly ICandidateProfileService _profileService;
+        private readonly IJobService _jobService;
         private readonly ILogger<CandidatesController> _logger;
 
-        public CandidatesController(ICandidateProfileService profileService, ILogger<CandidatesController> logger)
+        public CandidatesController(ICandidateProfileService profileService, IJobService jobService, ILogger<CandidatesController> logger)
         {
             _profileService = profileService;
+            _jobService = jobService;
             _logger = logger;
         }
 
@@ -263,6 +265,34 @@ namespace CareerMind.API.Controllers
         {
             var skills = await _profileService.GetAvailableSkillsAsync(query);
             return Ok(skills);
+        }
+
+        [HttpGet("me/applications")]
+        public async Task<IActionResult> GetMyApplications()
+        {
+            try
+            {
+                var apps = await _jobService.GetCandidateApplicationsAsync(GetUserId());
+                return Ok(apps);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        [HttpGet("me/saved-jobs")]
+        public async Task<IActionResult> GetMySavedJobs()
+        {
+            try
+            {
+                var saved = await _jobService.GetSavedJobsAsync(GetUserId());
+                return Ok(saved);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
     }
 }
