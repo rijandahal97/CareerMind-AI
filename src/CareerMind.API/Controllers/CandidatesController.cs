@@ -17,12 +17,14 @@ namespace CareerMind.API.Controllers
     {
         private readonly ICandidateProfileService _profileService;
         private readonly IJobService _jobService;
+        private readonly IAIJobMatchingService _aiJobMatchingService;
         private readonly ILogger<CandidatesController> _logger;
 
-        public CandidatesController(ICandidateProfileService profileService, IJobService jobService, ILogger<CandidatesController> logger)
+        public CandidatesController(ICandidateProfileService profileService, IJobService jobService, IAIJobMatchingService aiJobMatchingService, ILogger<CandidatesController> logger)
         {
             _profileService = profileService;
             _jobService = jobService;
+            _aiJobMatchingService = aiJobMatchingService;
             _logger = logger;
         }
 
@@ -292,6 +294,35 @@ namespace CareerMind.API.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new { Message = ex.Message });
+            }
+        }
+        [HttpGet("me/job-matches")]
+        public async Task<IActionResult> GetMyJobMatches()
+        {
+            try
+            {
+                var matches = await _aiJobMatchingService.GetCandidateJobMatchesAsync(GetUserId());
+                return Ok(matches);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting job matches");
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        [HttpGet("me/job-matches/{jobId}")]
+        public async Task<IActionResult> GetMyJobMatchDetails(Guid jobId)
+        {
+            try
+            {
+                var match = await _aiJobMatchingService.GetCandidateJobMatchAsync(GetUserId(), jobId);
+                return Ok(match);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting job match details");
+                return NotFound(new { Message = ex.Message });
             }
         }
     }

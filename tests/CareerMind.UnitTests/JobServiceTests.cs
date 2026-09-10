@@ -87,10 +87,14 @@ namespace CareerMind.UnitTests
         public async Task CandidateApplication_DuplicateApplicationPrevention_ThrowsException()
         {
             var userId = Guid.NewGuid();
-            var candidate = new CandidateProfile { UserId = userId };
+            var user = new User { Id = userId, FirstName = "Test", LastName = "User" };
+            var candidate = new CandidateProfile { UserId = userId, User = user };
+            _context.Users.Add(user);
             _context.CandidateProfiles.Add(candidate);
             
-            var job = new Job { Title = "Test Job", Status = "Active" };
+            var category = new JobCategory { Id = Guid.NewGuid(), Name = "Tech" };
+            var job = new Job { Title = "Test Job", Status = "Active", JobCategory = category, EmployerProfile = new EmployerProfile { CompanyName = "Test" } };
+            _context.JobCategories.Add(category);
             _context.Jobs.Add(job);
             await _context.SaveChangesAsync();
 

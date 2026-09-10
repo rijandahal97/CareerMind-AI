@@ -33,4 +33,7 @@ export const candidateService = {
 
     getPreferences: () => api.get('/candidates/me/preferences'),
     updatePreferences: (data) => api.put('/candidates/me/preferences', data),
+
+    getJobMatches: () => api.get('/candidates/me/job-matches'),
+    getJobMatchDetails: (id) => api.get(`/candidates/me/job-matches/${id}`),
 };

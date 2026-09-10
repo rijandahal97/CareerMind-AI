@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
+import { candidateService } from '../../services/candidate';
 import { LoadingState, ErrorState } from '../../components/StateComponents';
 
 const CandidateJobDetails = () => {
@@ -8,7 +9,9 @@ const CandidateJobDetails = () => {
     const navigate = useNavigate();
     
     const [job, setJob] = useState(null);
+    const [matchDetails, setMatchDetails] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [loadingMatch, setLoadingMatch] = useState(false);
     const [error, setError] = useState(null);
     const [applying, setApplying] = useState(false);
     const [saving, setSaving] = useState(false);
@@ -18,6 +21,18 @@ const CandidateJobDetails = () => {
             try {
                 const response = await api.get(`/Jobs/${id}`);
                 setJob(response.data);
+                
+                // Fetch match details
+                try {
+                    setLoadingMatch(true);
+                    const matchRes = await candidateService.getJobMatchDetails(id);
+                    setMatchDetails(matchRes.data);
+                } catch (matchErr) {
+                    console.error("Match details error:", matchErr);
+                } finally {
+                    setLoadingMatch(false);
+                }
+                
             } catch (err) {
                 setError('Failed to load job details.');
             } finally {
@@ -108,6 +123,96 @@ const CandidateJobDetails = () => {
                         </ul>
                     </>
                 )}
+
+                {/* AI Match Analysis */}
+                {loadingMatch ? (
+                    <div style={{ marginTop: '30px' }}><p>Loading AI Match Analysis...</p></div>
+                ) : matchDetails ? (
+                    <div style={{ marginTop: '30px', background: '#f5f7fa', padding: '20px', borderRadius: '8px', border: '1px solid #d2d6dc' }}>
+                        <h2 style={{ margin: '0 0 16px 0', color: '#1f2937' }}>CareerMind AI Match Analysis</h2>
+                        
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '20px' }}>
+                            <div style={{ background: '#fff', padding: '16px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', textAlign: 'center' }}>
+                                <h4 style={{ margin: '0 0 8px 0', color: '#6b7280' }}>Overall Match</h4>
+                                <div style={{ fontSize: '32px', fontWeight: 'bold', color: matchDetails.overallMatchScore >= 80 ? '#10b981' : matchDetails.overallMatchScore >= 50 ? '#f59e0b' : '#ef4444' }}>
+                                    {Math.round(matchDetails.overallMatchScore)}%
+                                </div>
+                            </div>
+                            <div style={{ background: '#fff', padding: '16px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                    <span style={{ color: '#4b5563' }}>Skill Match:</span>
+                                    <strong style={{ color: '#10b981' }}>{Math.round(matchDetails.skillMatchScore)}%</strong>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                    <span style={{ color: '#4b5563' }}>Experience Match:</span>
+                                    <strong style={{ color: '#10b981' }}>{Math.round(matchDetails.experienceMatchScore)}%</strong>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                    <span style={{ color: '#4b5563' }}>Education Match:</span>
+                                    <strong style={{ color: '#10b981' }}>{Math.round(matchDetails.educationMatchScore)}%</strong>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <span style={{ color: '#4b5563' }}>Preference Match:</span>
+                                    <strong style={{ color: '#10b981' }}>{Math.round(matchDetails.preferenceMatchScore)}%</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        {matchDetails.explanations && matchDetails.explanations.length > 0 && (
+                            <div style={{ marginBottom: '20px' }}>
+                                <h4 style={{ margin: '0 0 8px 0', color: '#374151' }}>Summary</h4>
+                                <ul style={{ margin: 0, paddingLeft: '20px', color: '#4b5563' }}>
+                                    {matchDetails.explanations.map((exp, idx) => (
+                                        <li key={idx} style={{ marginBottom: '4px' }}>{exp}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
+                            <div>
+                                <h4 style={{ margin: '0 0 12px 0', color: '#059669' }}>Top Strengths</h4>
+                                {matchDetails.strengths && matchDetails.strengths.length > 0 ? (
+                                    <ul style={{ paddingLeft: '20px', color: '#4b5563' }}>
+                                        {matchDetails.strengths.map((str, i) => <li key={i}>{str}</li>)}
+                                    </ul>
+                                ) : <p style={{ color: '#9ca3af', fontStyle: 'italic' }}>No particular strengths identified.</p>}
+
+                                <h4 style={{ margin: '16px 0 12px 0', color: '#059669' }}>Matched Skills</h4>
+                                {matchDetails.matchedSkills && matchDetails.matchedSkills.length > 0 ? (
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                                        {matchDetails.matchedSkills.map((skill, i) => (
+                                            <span key={i} style={{ background: '#d1fae5', color: '#065f46', padding: '4px 10px', borderRadius: '16px', fontSize: '12px', fontWeight: '500' }}>
+                                                {skill} ✓
+                                            </span>
+                                        ))}
+                                    </div>
+                                ) : <p style={{ color: '#9ca3af', fontStyle: 'italic' }}>No matching skills found.</p>}
+                            </div>
+                            
+                            <div>
+                                <h4 style={{ margin: '0 0 12px 0', color: '#dc2626' }}>Skill Gaps & Missing Requirements</h4>
+                                
+                                {matchDetails.gaps && matchDetails.gaps.length > 0 && (
+                                    <ul style={{ paddingLeft: '20px', color: '#b91c1c', marginBottom: '16px' }}>
+                                        {matchDetails.gaps.map((gap, i) => <li key={i}>{gap}</li>)}
+                                    </ul>
+                                )}
+                                
+                                <h4 style={{ margin: '0 0 12px 0', color: '#dc2626' }}>Missing Skills</h4>
+                                {matchDetails.missingSkills && matchDetails.missingSkills.length > 0 ? (
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                                        {matchDetails.missingSkills.map((ms, i) => (
+                                            <span key={i} style={{ background: '#fee2e2', color: '#991b1b', padding: '4px 10px', borderRadius: '16px', fontSize: '12px', fontWeight: '500' }}>
+                                                {ms.skillName} (Req: {ms.requiredProficiency}) ✗
+                                            </span>
+                                        ))}
+                                    </div>
+                                ) : <p style={{ color: '#9ca3af', fontStyle: 'italic' }}>No missing skills!</p>}
+                            </div>
+                        </div>
+                    </div>
+                ) : null}
             </div>
         </div>
     );

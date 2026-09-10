@@ -9,8 +9,15 @@ const JobCard = ({ job, isEmployer = false }) => {
                     <h3 style={{ margin: '0 0 8px 0', color: '#333' }}>{job.title}</h3>
                     <p style={{ margin: '0 0 4px 0', color: '#666', fontWeight: 'bold' }}>{job.companyName}</p>
                     <p style={{ margin: '0 0 12px 0', color: '#888', fontSize: '14px' }}>
-                        {job.location} • {job.workMode} • {job.employmentType}
+                        {[job.location, job.workMode, job.employmentType].filter(Boolean).join(' • ')}
                     </p>
+                    {job.overallMatchScore !== undefined && (
+                        <div style={{ marginBottom: '12px', display: 'inline-block', background: job.overallMatchScore > 80 ? '#e8f5e9' : job.overallMatchScore > 50 ? '#fff3e0' : '#ffebee', padding: '4px 12px', borderRadius: '4px', border: `1px solid ${job.overallMatchScore > 80 ? '#4caf50' : job.overallMatchScore > 50 ? '#ff9800' : '#f44336'}` }}>
+                            <strong style={{ color: job.overallMatchScore > 80 ? '#2e7d32' : job.overallMatchScore > 50 ? '#ef6c00' : '#c62828' }}>
+                                {Math.round(job.overallMatchScore)}% Match - {job.overallMatchScore > 80 ? 'Strong Match' : job.overallMatchScore > 50 ? 'Moderate Match' : 'Weak Match'}
+                            </strong>
+                        </div>
+                    )}
                 </div>
                 {job.companyLogoUrl && (
                     <img src={job.companyLogoUrl} alt={`${job.companyName} logo`} style={{ width: '50px', height: '50px', objectFit: 'contain' }} />
