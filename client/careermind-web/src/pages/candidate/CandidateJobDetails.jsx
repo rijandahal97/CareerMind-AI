@@ -10,6 +10,7 @@ const CandidateJobDetails = () => {
     
     const [job, setJob] = useState(null);
     const [matchDetails, setMatchDetails] = useState(null);
+    const [gapDetails, setGapDetails] = useState(null);
     const [loading, setLoading] = useState(true);
     const [loadingMatch, setLoadingMatch] = useState(false);
     const [error, setError] = useState(null);
@@ -27,8 +28,11 @@ const CandidateJobDetails = () => {
                     setLoadingMatch(true);
                     const matchRes = await candidateService.getJobMatchDetails(id);
                     setMatchDetails(matchRes.data);
+                    
+                    const gapRes = await candidateService.getCareerGapAnalysis(id);
+                    setGapDetails(gapRes.data);
                 } catch (matchErr) {
-                    console.error("Match details error:", matchErr);
+                    console.error("Match/Gap details error:", matchErr);
                 } finally {
                     setLoadingMatch(false);
                 }
@@ -211,6 +215,90 @@ const CandidateJobDetails = () => {
                                 ) : <p style={{ color: '#9ca3af', fontStyle: 'italic' }}>No missing skills!</p>}
                             </div>
                         </div>
+                    </div>
+                ) : null}
+
+                {/* Career Gap Analysis */}
+                {loadingMatch ? null : gapDetails ? (
+                    <div style={{ marginTop: '30px', background: '#fff', padding: '24px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+                            <h2 style={{ margin: 0, color: '#111827' }}>Personalized Career Gap Analysis</h2>
+                            <div style={{ background: '#f8fafc', padding: '12px 20px', borderRadius: '8px', border: '1px solid #e2e8f0', textAlign: 'center' }}>
+                                <span style={{ display: 'block', fontSize: '14px', color: '#64748b', fontWeight: '500', marginBottom: '4px' }}>Career Readiness</span>
+                                <span style={{ display: 'block', fontSize: '28px', color: gapDetails.currentReadinessScore >= 80 ? '#10b981' : gapDetails.currentReadinessScore >= 50 ? '#f59e0b' : '#ef4444', fontWeight: 'bold' }}>
+                                    {Math.round(gapDetails.currentReadinessScore)}%
+                                </span>
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '32px' }}>
+                            <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', padding: '16px', borderRadius: '8px' }}>
+                                <h4 style={{ margin: '0 0 12px 0', color: '#15803d' }}>Strong Skills</h4>
+                                {gapDetails.strongSkills && gapDetails.strongSkills.length > 0 ? (
+                                    <ul style={{ margin: 0, paddingLeft: '0', listStyle: 'none' }}>
+                                        {gapDetails.strongSkills.map((s, i) => <li key={i} style={{ color: '#166534', marginBottom: '4px' }}>✓ {s}</li>)}
+                                    </ul>
+                                ) : <p style={{ margin: 0, color: '#166534', fontStyle: 'italic', fontSize: '14px' }}>No strong skills listed.</p>}
+                            </div>
+                            <div style={{ background: '#fffbeb', border: '1px solid #fde68a', padding: '16px', borderRadius: '8px' }}>
+                                <h4 style={{ margin: '0 0 12px 0', color: '#b45309' }}>Developing Skills</h4>
+                                {gapDetails.developingSkills && gapDetails.developingSkills.length > 0 ? (
+                                    <ul style={{ margin: 0, paddingLeft: '0', listStyle: 'none' }}>
+                                        {gapDetails.developingSkills.map((s, i) => <li key={i} style={{ color: '#92400e', marginBottom: '4px' }}>⚠ {s}</li>)}
+                                    </ul>
+                                ) : <p style={{ margin: 0, color: '#92400e', fontStyle: 'italic', fontSize: '14px' }}>No developing skills listed.</p>}
+                            </div>
+                            <div style={{ background: '#fef2f2', border: '1px solid #fecaca', padding: '16px', borderRadius: '8px' }}>
+                                <h4 style={{ margin: '0 0 12px 0', color: '#b91c1c' }}>Missing Skills</h4>
+                                {gapDetails.missingSkills && gapDetails.missingSkills.length > 0 ? (
+                                    <ul style={{ margin: 0, paddingLeft: '0', listStyle: 'none' }}>
+                                        {gapDetails.missingSkills.map((s, i) => <li key={i} style={{ color: '#991b1b', marginBottom: '4px' }}>✕ {s}</li>)}
+                                    </ul>
+                                ) : <p style={{ margin: 0, color: '#991b1b', fontStyle: 'italic', fontSize: '14px' }}>No missing skills listed.</p>}
+                            </div>
+                        </div>
+
+                        {gapDetails.careerInsights && gapDetails.careerInsights.length > 0 && (
+                            <div style={{ marginBottom: '32px' }}>
+                                <h3 style={{ borderBottom: '2px solid #e5e7eb', paddingBottom: '8px', marginBottom: '16px', color: '#374151' }}>Personalized Insights</h3>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                    {gapDetails.careerInsights.map((insight, idx) => (
+                                        <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#f9fafb', padding: '12px 16px', borderRadius: '8px', borderLeft: '4px solid #6366f1' }}>
+                                            <span style={{ fontSize: '20px' }}>💡</span>
+                                            <span style={{ color: '#4b5563', fontSize: '15px' }}>{insight}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {gapDetails.roadmap && gapDetails.roadmap.length > 0 && (
+                            <div>
+                                <h3 style={{ borderBottom: '2px solid #e5e7eb', paddingBottom: '8px', marginBottom: '16px', color: '#374151' }}>Personalized Skill Roadmap</h3>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                    {gapDetails.roadmap.map((step, idx) => (
+                                        <div key={idx} style={{ display: 'flex', background: '#fff', border: '1px solid #e5e7eb', borderRadius: '8px', overflow: 'hidden' }}>
+                                            <div style={{ background: '#4f46e5', color: '#fff', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: 'bold' }}>
+                                                {step.stepNumber < 10 ? `0${step.stepNumber}` : step.stepNumber}
+                                            </div>
+                                            <div style={{ padding: '16px', flex: 1 }}>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                                                    <h4 style={{ margin: 0, fontSize: '18px', color: '#111827' }}>{step.skillName}</h4>
+                                                    <span style={{ background: step.priority === 'High' ? '#fee2e2' : step.priority === 'Medium' ? '#fef3c7' : '#f3f4f6', color: step.priority === 'High' ? '#991b1b' : step.priority === 'Medium' ? '#92400e' : '#4b5563', padding: '4px 12px', borderRadius: '12px', fontSize: '12px', fontWeight: 'bold' }}>
+                                                        {step.priority.toUpperCase()} PRIORITY
+                                                    </span>
+                                                </div>
+                                                <div style={{ display: 'flex', gap: '24px', marginBottom: '12px', fontSize: '14px' }}>
+                                                    <div><span style={{ color: '#6b7280' }}>Current:</span> <span style={{ fontWeight: '500', color: '#374151' }}>{step.currentLevel}</span></div>
+                                                    <div><span style={{ color: '#6b7280' }}>Target:</span> <span style={{ fontWeight: '500', color: '#374151' }}>{step.targetLevel}</span></div>
+                                                </div>
+                                                <p style={{ margin: 0, color: '#4b5563', fontSize: '14px', fontStyle: 'italic' }}>Why: "{step.reason}"</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 ) : null}
             </div>

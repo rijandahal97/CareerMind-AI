@@ -36,4 +36,5 @@ export const candidateService = {
 
     getJobMatches: () => api.get('/candidates/me/job-matches'),
     getJobMatchDetails: (id) => api.get(`/candidates/me/job-matches/${id}`),
+    getCareerGapAnalysis: (id) => api.get(`/candidates/me/career-gap/${id}`),
 };

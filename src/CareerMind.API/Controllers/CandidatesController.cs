@@ -18,13 +18,15 @@ namespace CareerMind.API.Controllers
         private readonly ICandidateProfileService _profileService;
         private readonly IJobService _jobService;
         private readonly IAIJobMatchingService _aiJobMatchingService;
+        private readonly ICareerGapAnalysisService _careerGapAnalysisService;
         private readonly ILogger<CandidatesController> _logger;
 
-        public CandidatesController(ICandidateProfileService profileService, IJobService jobService, IAIJobMatchingService aiJobMatchingService, ILogger<CandidatesController> logger)
+        public CandidatesController(ICandidateProfileService profileService, IJobService jobService, IAIJobMatchingService aiJobMatchingService, ICareerGapAnalysisService careerGapAnalysisService, ILogger<CandidatesController> logger)
         {
             _profileService = profileService;
             _jobService = jobService;
             _aiJobMatchingService = aiJobMatchingService;
+            _careerGapAnalysisService = careerGapAnalysisService;
             _logger = logger;
         }
 
@@ -322,6 +324,21 @@ namespace CareerMind.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting job match details");
+                return NotFound(new { Message = ex.Message });
+            }
+        }
+
+        [HttpGet("me/career-gap/{jobId}")]
+        public async Task<IActionResult> GetCareerGapAnalysis(Guid jobId)
+        {
+            try
+            {
+                var result = await _careerGapAnalysisService.GetCareerGapAnalysisAsync(GetUserId(), jobId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting career gap analysis");
                 return NotFound(new { Message = ex.Message });
             }
         }

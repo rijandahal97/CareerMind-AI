@@ -47,6 +47,7 @@ builder.Services.AddScoped<CareerMind.Application.Interfaces.ICandidateProfileSe
 builder.Services.AddScoped<CareerMind.Application.Interfaces.IEmployerProfileService, CareerMind.Infrastructure.Services.EmployerProfileService>();
 builder.Services.AddScoped<CareerMind.Application.Interfaces.IJobService, CareerMind.Infrastructure.Services.JobService>();
 builder.Services.AddScoped<CareerMind.Application.Interfaces.IAIJobMatchingService, CareerMind.Infrastructure.Services.AIJobMatchingService>();
+builder.Services.AddScoped<CareerMind.Application.Interfaces.ICareerGapAnalysisService, CareerMind.Infrastructure.Services.CareerGapAnalysisService>();
 
 // Configure Swagger
 builder.Services.AddEndpointsApiExplorer();
