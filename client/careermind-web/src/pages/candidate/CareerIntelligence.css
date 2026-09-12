@@ -1,0 +1,161 @@
+/* Career Intelligence Page Styles */
+.ci-container { animation: fadeIn 0.4s ease-in-out; }
+
+.ci-header { margin-bottom: 30px; }
+.ci-header h1 { margin: 0 0 8px 0; font-size: 1.8em; color: #f1f5f9; }
+.ci-subtitle { color: #94a3b8; margin: 0; font-size: 1em; }
+
+/* Loader */
+.ci-loader {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 400px; gap: 20px; color: #94a3b8;
+}
+.ci-spinner {
+    width: 48px; height: 48px; border: 4px solid #334155; border-top: 4px solid #38bdf8;
+    border-radius: 50%; animation: ciSpin 0.8s linear infinite;
+}
+@keyframes ciSpin { to { transform: rotate(360deg); } }
+
+/* Error / Empty */
+.ci-error, .ci-empty {
+    text-align: center; padding: 60px 20px; color: #94a3b8;
+}
+.ci-error h2, .ci-empty h2 { color: #f1f5f9; margin-bottom: 10px; }
+.ci-error-hint { color: #64748b; font-size: 0.9em; margin-top: 10px; }
+
+/* Overview Grid */
+.ci-overview-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 24px;
+}
+@media (max-width: 900px) { .ci-overview-grid { grid-template-columns: 1fr; } }
+
+/* Cards */
+.ci-card {
+    background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 24px; margin-bottom: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.ci-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+.ci-card h3 { margin: 0 0 16px 0; color: #e2e8f0; font-size: 1.15em; }
+
+.ci-card-readiness, .ci-card-best { display: flex; flex-direction: column; align-items: center; text-align: center; }
+
+/* Score Circle */
+.score-circle { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+.score-circle-text {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    display: flex; flex-direction: column; align-items: center;
+}
+.score-value { font-size: 1.4em; font-weight: 700; }
+.score-label { font-size: 0.7em; color: #94a3b8; margin-top: 2px; }
+
+/* Best Career */
+.ci-best-role { font-size: 1.3em; font-weight: 700; color: #38bdf8; margin-bottom: 12px; }
+.ci-transition { margin-top: 12px; color: #94a3b8; font-size: 0.9em; }
+.ci-skill-coverage { margin-top: 10px; width: 100%; text-align: left; font-size: 0.85em; color: #94a3b8; }
+
+/* Progress Bar */
+.ci-progress-bar {
+    width: 100%; height: 6px; background: #334155; border-radius: 4px; overflow: hidden; margin-top: 4px;
+}
+.ci-progress-bar.small { height: 4px; }
+.ci-progress-fill {
+    height: 100%; background: linear-gradient(90deg, #38bdf8, #818cf8);
+    border-radius: 4px; transition: width 1s ease-in-out;
+}
+
+/* Insights */
+.ci-insights-list { list-style: none; padding: 0; margin: 0; }
+.ci-insights-list li {
+    padding: 10px 0; border-bottom: 1px solid #334155; color: #cbd5e1; font-size: 0.95em; line-height: 1.5;
+}
+.ci-insights-list li:last-child { border-bottom: none; }
+
+/* Why Section */
+.ci-why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+@media (max-width: 768px) { .ci-why-grid { grid-template-columns: 1fr; } }
+.ci-why-col h4 { margin: 0 0 12px 0; color: #e2e8f0; }
+.ci-strength-item { color: #10b981; padding: 4px 0; font-size: 0.95em; }
+.ci-explanation-text { color: #94a3b8; font-size: 0.92em; line-height: 1.6; margin: 0 0 8px 0; }
+.ci-muted { color: #64748b; font-style: italic; }
+
+/* Skills Table */
+.ci-skills-table { border: 1px solid #334155; border-radius: 8px; overflow: hidden; }
+.ci-skills-header, .ci-skills-row {
+    display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 12px 16px; align-items: center;
+}
+.ci-skills-header { background: #0f172a; font-weight: 600; color: #94a3b8; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em; }
+.ci-skills-row { border-top: 1px solid #334155; }
+.ci-skills-row:hover { background: rgba(56, 189, 248, 0.05); }
+.ci-skill-name { color: #e2e8f0; font-weight: 500; }
+
+/* Badges */
+.severity-badge, .status-badge {
+    display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.75em; font-weight: 600; text-transform: uppercase;
+}
+.severity-high { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+.severity-medium { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+.severity-low { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+.status-strong { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+.status-developing { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+.status-missing { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+/* Timeline */
+.ci-timeline { position: relative; padding-left: 30px; }
+.ci-timeline-item { position: relative; padding-bottom: 28px; }
+.ci-timeline-dot {
+    position: absolute; left: -30px; top: 4px; width: 14px; height: 14px;
+    border-radius: 50%; background: #334155; border: 3px solid #38bdf8; z-index: 1;
+}
+.ci-timeline-line {
+    position: absolute; left: -24px; top: 18px; width: 2px; height: calc(100% - 10px);
+    background: linear-gradient(180deg, #38bdf8, #334155);
+}
+.ci-current .ci-timeline-dot { background: #38bdf8; box-shadow: 0 0 12px rgba(56, 189, 248, 0.6); }
+.ci-timeline-content { padding-left: 12px; }
+.ci-timeline-header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ci-timeline-role { font-weight: 700; color: #e2e8f0; font-size: 1.05em; }
+.ci-timeline-level { color: #64748b; font-size: 0.85em; }
+.ci-current-badge {
+    background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 2px 10px; border-radius: 10px;
+    font-size: 0.75em; font-weight: 600;
+}
+.ci-timeline-readiness { margin-top: 8px; font-size: 0.88em; color: #94a3b8; }
+.ci-timeline-missing { margin-top: 6px; font-size: 0.85em; color: #94a3b8; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+.ci-missing-chip {
+    background: rgba(239, 68, 68, 0.12); color: #ef4444; padding: 2px 8px; border-radius: 8px; font-size: 0.82em;
+}
+.ci-timeline-step { color: #64748b; font-size: 0.85em; margin: 6px 0 0 0; font-style: italic; }
+
+/* Next Career Move */
+.ci-next-move { border-left: 3px solid #38bdf8; }
+.ci-next-move-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.ci-next-move-role { font-size: 1.5em; font-weight: 700; color: #38bdf8; }
+.ci-next-move-body { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+@media (max-width: 768px) { .ci-next-move-body { grid-template-columns: 1fr; } }
+.ci-next-move-col h4 { margin: 0 0 10px 0; color: #e2e8f0; }
+.ci-next-move-col p { color: #94a3b8; margin: 0 0 6px 0; font-size: 0.92em; }
+.ci-focus-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #334155; }
+.ci-focus-item span { color: #e2e8f0; }
+.ci-action-box {
+    margin-top: 20px; padding: 16px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.2);
+    border-radius: 8px;
+}
+.ci-action-box h4 { margin: 0 0 8px 0; color: #38bdf8; }
+.ci-action-box p { color: #cbd5e1; margin: 0; line-height: 1.5; }
+
+/* All Recommendations */
+.ci-recommendations-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.ci-rec-card {
+    background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 18px;
+    transition: border-color 0.2s;
+}
+.ci-rec-card:hover { border-color: #38bdf8; }
+.ci-rec-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.ci-rec-rank { font-size: 1.3em; font-weight: 800; color: #38bdf8; }
+.ci-rec-role { font-weight: 700; color: #e2e8f0; font-size: 1.05em; }
+.ci-rec-scores { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.ci-rec-scores div { text-align: center; }
+.ci-rec-scores span { display: block; font-size: 0.7em; color: #64748b; text-transform: uppercase; }
+.ci-rec-scores strong { color: #e2e8f0; font-size: 1.1em; }
+.ci-rec-difficulty { margin-bottom: 10px; }
+.ci-rec-action { color: #94a3b8; font-size: 0.85em; margin: 0; line-height: 1.4; }

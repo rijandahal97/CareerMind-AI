@@ -7,6 +7,7 @@ import CandidateJobs from './CandidateJobs';
 import CandidateJobDetails from './CandidateJobDetails';
 import CandidateApplications from './CandidateApplications';
 import CandidateSavedJobs from './CandidateSavedJobs';
+import CareerIntelligence from './CareerIntelligence';
 
 const ProfileSection = ({ initialData, fetchProfile }) => {
     const [formData, setFormData] = useState(initialData || {});
@@ -210,6 +211,7 @@ const CandidateDashboard = () => {
         { path: 'jobs', label: 'Find Jobs' },
         { path: 'applications', label: 'My Applications' },
         { path: 'saved-jobs', label: 'Saved Jobs' },
+        { path: 'career-intelligence', label: '🧠 Career Intelligence' },
     ];
 
     if (loading) return <div className="loader">Loading...</div>;
@@ -256,6 +258,7 @@ const CandidateDashboard = () => {
                         <Route path="jobs/:id" element={<CandidateJobDetails />} />
                         <Route path="applications" element={<CandidateApplications />} />
                         <Route path="saved-jobs" element={<CandidateSavedJobs />} />
+                        <Route path="career-intelligence" element={<CareerIntelligence />} />
                     </Routes>
                 </div>
             </main>
