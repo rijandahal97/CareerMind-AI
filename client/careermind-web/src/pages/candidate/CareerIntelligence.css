@@ -1,5 +1,12 @@
 /* Career Intelligence Page Styles */
-.ci-container { animation: fadeIn 0.4s ease-in-out; }
+.ci-container {
+    animation: fadeIn 0.4s ease-in-out;
+    background: #0f172a;
+    border-radius: 16px;
+    padding: 28px;
+    min-height: 600px;
+    color: #f1f5f9;
+}
 
 .ci-header { margin-bottom: 30px; }
 .ci-header h1 { margin: 0 0 8px 0; font-size: 1.8em; color: #f1f5f9; }
