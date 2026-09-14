@@ -11,6 +11,7 @@ import CandidateJobDetails from './CandidateJobDetails';
 import CandidateApplications from './CandidateApplications';
 import CandidateSavedJobs from './CandidateSavedJobs';
 import CareerIntelligence from './CareerIntelligence';
+import ResumeIntelligence from './ResumeIntelligence';
 
 // Icons
 import {
@@ -402,7 +403,7 @@ const CandidateDashboard = () => {
                             <Route path="path" element={<PlaceholderFeature title="Career Path Simulator" icon={<TrendingUp size={48} color="#3b82f6" />} />} />
                             
                             {/* Tools */}
-                            <Route path="resume" element={<PlaceholderFeature title="AI Resume Builder" icon={<FileStack size={48} color="#f59e0b" />} />} />
+                            <Route path="resume" element={<ResumeIntelligence />} />
                             <Route path="assistant" element={<PlaceholderFeature title="AI Interview Prep" icon={<Bot size={48} color="#ef4444" />} />} />
                             <Route path="settings" element={<PlaceholderFeature title="Account Settings" icon={<Settings size={48} color="#64748b" />} />} />
                         </Routes>

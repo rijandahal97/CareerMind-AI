@@ -28,6 +28,7 @@ namespace CareerMind.Domain.Entities
         public string? AvailabilityStatus { get; set; }
 
         public ICollection<CandidateSkill> CandidateSkills { get; set; } = new List<CandidateSkill>();
+        public ICollection<Resume> Resumes { get; set; } = new List<Resume>();
         public ICollection<JobApplication> JobApplications { get; set; } = new List<JobApplication>();
         
         public ICollection<Education> Educations { get; set; } = new List<Education>();

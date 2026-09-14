@@ -13,6 +13,8 @@ namespace CareerMind.Infrastructure.Data
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<Role> Roles { get; set; } = null!;
         public DbSet<CandidateProfile> CandidateProfiles { get; set; } = null!;
+        public DbSet<Resume> Resumes { get; set; } = null!;
+        public DbSet<ResumeAnalysis> ResumeAnalyses { get; set; } = null!;
         public DbSet<Skill> Skills { get; set; } = null!;
         public DbSet<CandidateSkill> CandidateSkills { get; set; } = null!;
         public DbSet<EmployerProfile> EmployerProfiles { get; set; } = null!;
@@ -42,6 +44,25 @@ namespace CareerMind.Infrastructure.Data
             modelBuilder.Entity<CandidateSkill>()
                 .HasIndex(cs => new { cs.CandidateProfileId, cs.SkillId })
                 .IsUnique();
+
+            // Resume relationships
+            modelBuilder.Entity<Resume>()
+                .HasOne(r => r.CandidateProfile)
+                .WithMany(cp => cp.Resumes)
+                .HasForeignKey(r => r.CandidateProfileId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ResumeAnalysis>()
+                .HasOne(ra => ra.Resume)
+                .WithMany(r => r.Analyses)
+                .HasForeignKey(ra => ra.ResumeId)
+                .OnDelete(DeleteBehavior.Cascade);
+            // Optional relationship to Job (if needed)
+            // modelBuilder.Entity<ResumeAnalysis>()
+            //     .HasOne(ra => ra.TargetJob)
+            //     .WithMany()
+            //     .HasForeignKey(ra => ra.TargetJobId)
+            //     .OnDelete(DeleteBehavior.SetNull);
                 
             modelBuilder.Entity<CandidateLanguage>()
                 .HasIndex(cl => new { cl.CandidateProfileId, cl.LanguageId })
