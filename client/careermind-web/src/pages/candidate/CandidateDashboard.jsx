@@ -12,11 +12,12 @@ import CandidateApplications from './CandidateApplications';
 import CandidateSavedJobs from './CandidateSavedJobs';
 import CareerIntelligence from './CareerIntelligence';
 import ResumeIntelligence from './ResumeIntelligence';
+import CareerCommandCenter from './CareerCommandCenter';
 
 // Icons
 import {
     LayoutDashboard, User, Briefcase, BookOpen, Star, FileText, Bookmark, 
-    Lightbulb, Map, FileStack, TrendingUp, Settings, LogOut, Bell, Search, Menu, X, ChevronDown, Bot
+    Lightbulb, Map, FileStack, TrendingUp, Settings, LogOut, Bell, Search, Menu, X, ChevronDown, Bot, Target
 } from 'lucide-react';
 
 const ProfileSection = ({ initialData, fetchProfile }) => {
@@ -261,6 +262,7 @@ const CandidateDashboard = () => {
         {
             title: "INTELLIGENCE 🚀",
             items: [
+                { path: 'command-center', label: 'Command Center', icon: <Target size={20} /> },
                 { path: 'career-intelligence', label: 'Career Intelligence', icon: <Lightbulb size={20} /> },
                 { path: 'roadmap', label: 'Skill Roadmap', icon: <Map size={20} /> },
                 { path: 'path', label: 'Career Path', icon: <TrendingUp size={20} /> }
@@ -398,6 +400,7 @@ const CandidateDashboard = () => {
                             <Route path="saved-jobs" element={<CandidateSavedJobs />} />
                             
                             {/* Intelligence */}
+                            <Route path="command-center" element={<CareerCommandCenter />} />
                             <Route path="career-intelligence" element={<CareerIntelligence />} />
                             <Route path="roadmap" element={<PlaceholderFeature title="Interactive Skill Roadmap" icon={<Map size={48} color="#10b981" />} />} />
                             <Route path="path" element={<PlaceholderFeature title="Career Path Simulator" icon={<TrendingUp size={48} color="#3b82f6" />} />} />

@@ -37,5 +37,6 @@ namespace CareerMind.Domain.Entities
         public ICollection<CandidateLanguage> CandidateLanguages { get; set; } = new List<CandidateLanguage>();
         
         public CareerPreference? CareerPreference { get; set; }
+        public ICollection<CareerActionProgress> ActionProgresses { get; set; } = new List<CareerActionProgress>();
     }
 }

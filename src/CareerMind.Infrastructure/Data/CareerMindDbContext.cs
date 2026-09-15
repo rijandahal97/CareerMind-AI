@@ -31,6 +31,7 @@ namespace CareerMind.Infrastructure.Data
         public DbSet<Language> Languages { get; set; } = null!;
         public DbSet<CandidateLanguage> CandidateLanguages { get; set; } = null!;
         public DbSet<CareerPreference> CareerPreferences { get; set; } = null!;
+        public DbSet<CareerActionProgress> CareerActionProgresses { get; set; } = null!;
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -205,6 +206,17 @@ namespace CareerMind.Infrastructure.Data
                 .HasOne(rt => rt.User)
                 .WithMany(u => u.RefreshTokens)
                 .HasForeignKey(rt => rt.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // CareerActionProgress configuration
+            modelBuilder.Entity<CareerActionProgress>()
+                .HasIndex(cap => new { cap.CandidateProfileId, cap.ActionKey })
+                .IsUnique();
+
+            modelBuilder.Entity<CareerActionProgress>()
+                .HasOne(cap => cap.CandidateProfile)
+                .WithMany(cp => cp.ActionProgresses)
+                .HasForeignKey(cap => cap.CandidateProfileId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

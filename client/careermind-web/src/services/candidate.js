@@ -38,4 +38,8 @@ export const candidateService = {
     getJobMatchDetails: (id) => api.get(`/candidates/me/job-matches/${id}`),
     getCareerGapAnalysis: (id) => api.get(`/candidates/me/career-gap/${id}`),
     getCareerPathIntelligence: () => api.get('/candidates/me/career-path'),
+    
+    getCommandCenter: () => api.get('/candidates/me/career-command-center'),
+    updateCommandCenterAction: (actionKey, isCompleted) => 
+        api.put(`/candidates/me/career-command-center/actions/${encodeURIComponent(actionKey)}`, { isCompleted }),
 };

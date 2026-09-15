@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using CareerMind.Application.Interfaces;
 using CareerMind.Application.DTOs.Candidate;
 
+using CareerMind.Application.DTOs.CareerCommandCenter;
+
 namespace CareerMind.API.Controllers
 {
     [ApiController]
@@ -20,15 +22,24 @@ namespace CareerMind.API.Controllers
         private readonly IAIJobMatchingService _aiJobMatchingService;
         private readonly ICareerGapAnalysisService _careerGapAnalysisService;
         private readonly ICareerPathIntelligenceService _careerPathIntelligenceService;
+        private readonly ICareerCommandCenterService _commandCenterService;
         private readonly ILogger<CandidatesController> _logger;
 
-        public CandidatesController(ICandidateProfileService profileService, IJobService jobService, IAIJobMatchingService aiJobMatchingService, ICareerGapAnalysisService careerGapAnalysisService, ICareerPathIntelligenceService careerPathIntelligenceService, ILogger<CandidatesController> logger)
+        public CandidatesController(
+            ICandidateProfileService profileService,
+            IJobService jobService,
+            IAIJobMatchingService aiJobMatchingService,
+            ICareerGapAnalysisService careerGapAnalysisService,
+            ICareerPathIntelligenceService careerPathIntelligenceService,
+            ICareerCommandCenterService commandCenterService,
+            ILogger<CandidatesController> logger)
         {
             _profileService = profileService;
             _jobService = jobService;
             _aiJobMatchingService = aiJobMatchingService;
             _careerGapAnalysisService = careerGapAnalysisService;
             _careerPathIntelligenceService = careerPathIntelligenceService;
+            _commandCenterService = commandCenterService;
             _logger = logger;
         }
 
@@ -357,6 +368,70 @@ namespace CareerMind.API.Controllers
             {
                 _logger.LogError(ex, "Error getting career path intelligence");
                 return NotFound(new { Message = ex.Message });
+            }
+        }
+
+        [HttpGet("me/career-command-center")]
+        public async Task<IActionResult> GetCareerCommandCenter()
+        {
+            try
+            {
+                var userId = GetUserId();
+                var result = await _commandCenterService.GetCareerCommandCenterAsync(userId);
+                return Ok(result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting career command center");
+                return StatusCode(500, new { Message = ex.Message });
+            }
+        }
+
+        [HttpGet("me/career-command-center/actions")]
+        public async Task<IActionResult> GetCareerActions()
+        {
+            try
+            {
+                var userId = GetUserId();
+                var result = await _commandCenterService.GetActionProgressesAsync(userId);
+                return Ok(result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting career action progress list");
+                return StatusCode(500, new { Message = ex.Message });
+            }
+        }
+
+        [HttpPut("me/career-command-center/actions/{actionKey}")]
+        public async Task<IActionResult> UpdateCareerAction(string actionKey, [FromBody] UpdateCareerActionProgressDto dto)
+        {
+            try
+            {
+                var userId = GetUserId();
+                var result = await _commandCenterService.UpdateActionProgressAsync(userId, actionKey, dto.IsCompleted);
+                return Ok(result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { Message = ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating career action progress");
+                return StatusCode(500, new { Message = ex.Message });
             }
         }
     }
