@@ -1,11 +1,11 @@
-import api from './api';
+﻿import api from './api';
 
 export const candidateService = {
     getProfile: () => api.get('/candidates/me/profile'),
     updateProfile: (data) => api.put('/candidates/me/profile', data),
-    
+
     getAvailableSkills: (query) => api.get(`/candidates/available-skills?query=${query}`),
-    
+
     getSkills: () => api.get('/candidates/me/skills'),
     addSkill: (data) => api.post('/candidates/me/skills', data),
     updateSkill: (id, data) => api.put(`/candidates/me/skills/${id}`, data),
@@ -38,8 +38,14 @@ export const candidateService = {
     getJobMatchDetails: (id) => api.get(`/candidates/me/job-matches/${id}`),
     getCareerGapAnalysis: (id) => api.get(`/candidates/me/career-gap/${id}`),
     getCareerPathIntelligence: () => api.get('/candidates/me/career-path'),
-    
+
     getCommandCenter: () => api.get('/candidates/me/career-command-center'),
-    updateCommandCenterAction: (actionKey, isCompleted) => 
+    updateCommandCenterAction: (actionKey, isCompleted) =>
         api.put(`/candidates/me/career-command-center/actions/${encodeURIComponent(actionKey)}`, { isCompleted }),
+    startInterview: (data) => api.post('/candidates/me/interviews', data),
+    getInterviews: () => api.get('/candidates/me/interviews'),
+    getInterview: (sessionId) => api.get(`/candidates/me/interviews/${sessionId}`),
+    submitInterviewAnswer: (sessionId, questionId, data) => api.post(`/candidates/me/interviews/${sessionId}/answers?questionId=${questionId}`, data),
+    getInterviewReadiness: (sessionId) => api.get(`/candidates/me/interviews/${sessionId}/readiness`),
+    completeInterview: (sessionId) => api.post(`/candidates/me/interviews/${sessionId}/complete`)
 };

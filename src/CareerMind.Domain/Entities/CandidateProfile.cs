@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace CareerMind.Domain.Entities
@@ -7,7 +7,7 @@ namespace CareerMind.Domain.Entities
     {
         public Guid UserId { get; set; }
         public User User { get; set; } = null!;
-        
+
         public string? Headline { get; set; }
         public string? Bio { get; set; }
         public string? CareerSummary { get; set; }
@@ -19,24 +19,25 @@ namespace CareerMind.Domain.Entities
         public string? CurrentJobTitle { get; set; }
         public string? CurrentCompany { get; set; }
         public int? YearsOfExperience { get; set; }
-        
+
         // Links
         public string? LinkedInUrl { get; set; }
         public string? GitHubUrl { get; set; }
         public string? PortfolioUrl { get; set; }
-        
+
         public string? AvailabilityStatus { get; set; }
 
         public ICollection<CandidateSkill> CandidateSkills { get; set; } = new List<CandidateSkill>();
         public ICollection<Resume> Resumes { get; set; } = new List<Resume>();
         public ICollection<JobApplication> JobApplications { get; set; } = new List<JobApplication>();
-        
+
         public ICollection<Education> Educations { get; set; } = new List<Education>();
         public ICollection<WorkExperience> WorkExperiences { get; set; } = new List<WorkExperience>();
         public ICollection<Certification> Certifications { get; set; } = new List<Certification>();
         public ICollection<CandidateLanguage> CandidateLanguages { get; set; } = new List<CandidateLanguage>();
-        
+
         public CareerPreference? CareerPreference { get; set; }
         public ICollection<CareerActionProgress> ActionProgresses { get; set; } = new List<CareerActionProgress>();
+        public ICollection<InterviewSession> InterviewSessions { get; set; } = new List<InterviewSession>();
     }
 }

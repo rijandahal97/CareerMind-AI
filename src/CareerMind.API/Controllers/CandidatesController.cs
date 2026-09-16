@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CareerMind.Application.Interfaces;
 using CareerMind.Application.DTOs.Candidate;
-
+using CareerMind.Application.DTOs.Interview;
 using CareerMind.Application.DTOs.CareerCommandCenter;
 
 namespace CareerMind.API.Controllers
@@ -23,6 +23,7 @@ namespace CareerMind.API.Controllers
         private readonly ICareerGapAnalysisService _careerGapAnalysisService;
         private readonly ICareerPathIntelligenceService _careerPathIntelligenceService;
         private readonly ICareerCommandCenterService _commandCenterService;
+        private readonly ICareerInterviewService _interviewService;
         private readonly ILogger<CandidatesController> _logger;
 
         public CandidatesController(
@@ -32,6 +33,7 @@ namespace CareerMind.API.Controllers
             ICareerGapAnalysisService careerGapAnalysisService,
             ICareerPathIntelligenceService careerPathIntelligenceService,
             ICareerCommandCenterService commandCenterService,
+            ICareerInterviewService interviewService,
             ILogger<CandidatesController> logger)
         {
             _profileService = profileService;
@@ -40,6 +42,7 @@ namespace CareerMind.API.Controllers
             _careerGapAnalysisService = careerGapAnalysisService;
             _careerPathIntelligenceService = careerPathIntelligenceService;
             _commandCenterService = commandCenterService;
+            _interviewService = interviewService;
             _logger = logger;
         }
 
@@ -102,7 +105,7 @@ namespace CareerMind.API.Controllers
             var result = await _profileService.AddSkillAsync(userId, dto);
             return Ok(result);
         }
-        
+
         [HttpPut("me/skills/{id}")]
         public async Task<IActionResult> UpdateSkill(Guid id, [FromBody] UpdateCandidateSkillDto dto)
         {
@@ -168,7 +171,7 @@ namespace CareerMind.API.Controllers
             // Basic validation
             if (dto.IsCurrent) dto.EndDate = null;
             if (dto.EndDate.HasValue && dto.StartDate > dto.EndDate.Value) return BadRequest("Start date must be before end date.");
-            
+
             var result = await _profileService.AddExperienceAsync(userId, dto);
             return Ok(result);
         }
@@ -179,7 +182,7 @@ namespace CareerMind.API.Controllers
             var userId = GetUserId();
             if (dto.IsCurrent) dto.EndDate = null;
             if (dto.EndDate.HasValue && dto.StartDate > dto.EndDate.Value) return BadRequest("Start date must be before end date.");
-            
+
             var result = await _profileService.UpdateExperienceAsync(userId, id, dto);
             return Ok(result);
         }
@@ -432,6 +435,117 @@ namespace CareerMind.API.Controllers
             {
                 _logger.LogError(ex, "Error updating career action progress");
                 return StatusCode(500, new { Message = ex.Message });
+            }
+        }
+
+        // Interview Coach Endpoints
+        [HttpPost("me/interviews")]
+        public async Task<IActionResult> StartInterview([FromBody] StartInterviewRequestDto request)
+        {
+            try
+            {
+                var result = await _interviewService.StartInterviewAsync(GetUserId(), request);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error starting interview");
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        [HttpGet("me/interviews")]
+        public async Task<IActionResult> GetInterviews()
+        {
+            try
+            {
+                var result = await _interviewService.GetCandidateInterviewsAsync(GetUserId());
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting interviews");
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        [HttpGet("me/interviews/{sessionId}")]
+        public async Task<IActionResult> GetInterview(Guid sessionId)
+        {
+            try
+            {
+                var result = await _interviewService.GetInterviewSessionAsync(GetUserId(), sessionId);
+                return Ok(result);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting interview session details");
+                return NotFound(new { Message = ex.Message });
+            }
+        }
+
+        [HttpPost("me/interviews/{sessionId}/answers")]
+        public async Task<IActionResult> SubmitAnswer(Guid sessionId, [FromQuery] Guid questionId, [FromBody] SubmitInterviewAnswerRequestDto request)
+        {
+            try
+            {
+                var result = await _interviewService.SubmitAnswerAsync(GetUserId(), sessionId, questionId, request);
+                return Ok(result);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { Message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error submitting answer");
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        [HttpGet("me/interviews/{sessionId}/readiness")]
+        public async Task<IActionResult> GetInterviewReadiness(Guid sessionId)
+        {
+            try
+            {
+                var result = await _interviewService.GetInterviewReadinessAsync(GetUserId(), sessionId);
+                return Ok(result);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting interview readiness");
+                return NotFound(new { Message = ex.Message });
+            }
+        }
+
+        [HttpPost("me/interviews/{sessionId}/complete")]
+        public async Task<IActionResult> CompleteInterview(Guid sessionId)
+        {
+            try
+            {
+                var result = await _interviewService.CompleteInterviewAsync(GetUserId(), sessionId);
+                return Ok(result);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error completing interview");
+                return BadRequest(new { Message = ex.Message });
             }
         }
     }

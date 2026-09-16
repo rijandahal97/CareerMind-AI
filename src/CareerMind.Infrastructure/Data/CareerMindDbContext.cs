@@ -1,4 +1,4 @@
-using CareerMind.Domain.Entities;
+﻿using CareerMind.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -24,7 +24,7 @@ namespace CareerMind.Infrastructure.Data
         public DbSet<JobApplication> JobApplications { get; set; } = null!;
         public DbSet<SavedJob> SavedJobs { get; set; } = null!;
         public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
-        
+
         public DbSet<Education> Educations { get; set; } = null!;
         public DbSet<WorkExperience> WorkExperiences { get; set; } = null!;
         public DbSet<Certification> Certifications { get; set; } = null!;
@@ -32,12 +32,14 @@ namespace CareerMind.Infrastructure.Data
         public DbSet<CandidateLanguage> CandidateLanguages { get; set; } = null!;
         public DbSet<CareerPreference> CareerPreferences { get; set; } = null!;
         public DbSet<CareerActionProgress> CareerActionProgresses { get; set; } = null!;
-
+        public DbSet<InterviewSession> InterviewSessions { get; set; } = null!;
+        public DbSet<InterviewQuestion> InterviewQuestions { get; set; } = null!;
+        public DbSet<InterviewAnswer> InterviewAnswers { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            
+
             // Apply configurations from current assembly
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
@@ -64,7 +66,7 @@ namespace CareerMind.Infrastructure.Data
             //     .WithMany()
             //     .HasForeignKey(ra => ra.TargetJobId)
             //     .OnDelete(DeleteBehavior.SetNull);
-                
+
             modelBuilder.Entity<CandidateLanguage>()
                 .HasIndex(cl => new { cl.CandidateProfileId, cl.LanguageId })
                 .IsUnique();
@@ -81,7 +83,7 @@ namespace CareerMind.Infrastructure.Data
                 .WithMany(cp => cp.CandidateSkills)
                 .HasForeignKey(cs => cs.CandidateProfileId)
                 .OnDelete(DeleteBehavior.Cascade);
-                
+
             modelBuilder.Entity<CandidateSkill>()
                 .HasOne(cs => cs.Skill)
                 .WithMany(s => s.CandidateSkills)
@@ -99,19 +101,19 @@ namespace CareerMind.Infrastructure.Data
                 .WithMany(l => l.CandidateLanguages)
                 .HasForeignKey(cl => cl.LanguageId)
                 .OnDelete(DeleteBehavior.Cascade);
-                
+
             modelBuilder.Entity<Education>()
                 .HasOne(e => e.CandidateProfile)
                 .WithMany(cp => cp.Educations)
                 .HasForeignKey(e => e.CandidateProfileId)
                 .OnDelete(DeleteBehavior.Cascade);
-                
+
             modelBuilder.Entity<WorkExperience>()
                 .HasOne(w => w.CandidateProfile)
                 .WithMany(cp => cp.WorkExperiences)
                 .HasForeignKey(w => w.CandidateProfileId)
                 .OnDelete(DeleteBehavior.Cascade);
-                
+
             modelBuilder.Entity<Certification>()
                 .HasOne(c => c.CandidateProfile)
                 .WithMany(cp => cp.Certifications)
@@ -121,12 +123,12 @@ namespace CareerMind.Infrastructure.Data
             // M-to-M for JobSkill
             modelBuilder.Entity<JobSkill>()
                 .HasKey(js => new { js.JobId, js.SkillId });
-                
+
             modelBuilder.Entity<JobSkill>()
                 .HasOne(js => js.Job)
                 .WithMany(j => j.JobSkills)
                 .HasForeignKey(js => js.JobId);
-                
+
             modelBuilder.Entity<JobSkill>()
                 .HasOne(js => js.Skill)
                 .WithMany(s => s.JobSkills)
@@ -173,7 +175,7 @@ namespace CareerMind.Infrastructure.Data
                 .WithMany(cp => cp.JobApplications)
                 .HasForeignKey(ja => ja.CandidateProfileId)
                 .OnDelete(DeleteBehavior.NoAction);
-                
+
             modelBuilder.Entity<JobApplication>()
                 .HasIndex(ja => new { ja.CandidateProfileId, ja.JobId })
                 .IsUnique();
@@ -181,19 +183,19 @@ namespace CareerMind.Infrastructure.Data
             // SavedJob configuration
             modelBuilder.Entity<SavedJob>()
                 .HasKey(sj => new { sj.CandidateProfileId, sj.JobId });
-                
+
             modelBuilder.Entity<SavedJob>()
                 .HasOne(sj => sj.CandidateProfile)
                 .WithMany()
                 .HasForeignKey(sj => sj.CandidateProfileId)
                 .OnDelete(DeleteBehavior.NoAction);
-                
+
             modelBuilder.Entity<SavedJob>()
                 .HasOne(sj => sj.Job)
                 .WithMany(j => j.SavedJobs)
                 .HasForeignKey(sj => sj.JobId)
                 .OnDelete(DeleteBehavior.Cascade);
-                
+
             // Setup User/Role constraint
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Role)
@@ -217,6 +219,31 @@ namespace CareerMind.Infrastructure.Data
                 .HasOne(cap => cap.CandidateProfile)
                 .WithMany(cp => cp.ActionProgresses)
                 .HasForeignKey(cap => cap.CandidateProfileId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // InterviewSession Relationships
+            modelBuilder.Entity<InterviewSession>()
+                .HasOne(isess => isess.CandidateProfile)
+                .WithMany(cp => cp.InterviewSessions)
+                .HasForeignKey(isess => isess.CandidateProfileId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<InterviewSession>()
+                .HasOne(isess => isess.TargetJob)
+                .WithMany(j => j.InterviewSessions)
+                .HasForeignKey(isess => isess.JobId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<InterviewQuestion>()
+                .HasOne(iq => iq.InterviewSession)
+                .WithMany(isess => isess.Questions)
+                .HasForeignKey(iq => iq.InterviewSessionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<InterviewAnswer>()
+                .HasOne(ia => ia.InterviewQuestion)
+                .WithMany(iq => iq.Answers)
+                .HasForeignKey(ia => ia.InterviewQuestionId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

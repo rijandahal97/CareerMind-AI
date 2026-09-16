@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import { candidateService } from '../../services/candidate';
 import { useAuth } from '../../context/AuthContext';
@@ -13,10 +13,11 @@ import CandidateSavedJobs from './CandidateSavedJobs';
 import CareerIntelligence from './CareerIntelligence';
 import ResumeIntelligence from './ResumeIntelligence';
 import CareerCommandCenter from './CareerCommandCenter';
+import CareerInterview from './CareerInterview';
 
 // Icons
 import {
-    LayoutDashboard, User, Briefcase, BookOpen, Star, FileText, Bookmark, 
+    LayoutDashboard, User, Briefcase, BookOpen, Star, FileText, Bookmark,
     Lightbulb, Map, FileStack, TrendingUp, Settings, LogOut, Bell, Search, Menu, X, ChevronDown, Bot, Target
 } from 'lucide-react';
 
@@ -98,7 +99,7 @@ const SkillsSection = ({ skills, fetchProfile }) => {
     const [selectedSkillId, setSelectedSkillId] = useState('');
     const [proficiency, setProficiency] = useState(2);
     const [years, setYears] = useState(1);
-    
+
     useEffect(() => {
         if(query.length > 1) {
             candidateService.getAvailableSkills(query).then(res => setAvailable(res.data)).catch(console.error);
@@ -118,7 +119,7 @@ const SkillsSection = ({ skills, fetchProfile }) => {
             alert('Error adding skill');
         }
     };
-    
+
     const handleRemove = async (id) => {
         if(window.confirm('Are you sure?')) {
             await candidateService.removeSkill(id);
@@ -132,7 +133,7 @@ const SkillsSection = ({ skills, fetchProfile }) => {
                 <h2>Skills Management</h2>
                 <p>Add technical and soft skills to improve AI matching.</p>
             </div>
-            
+
             <div className="skills-grid">
                 {skills && skills.length === 0 ? <div className="empty-state-card w-100"><Star size={32} /> <p>No skills added yet.</p></div> :
                   skills.map(s => (
@@ -225,7 +226,7 @@ const CandidateDashboard = () => {
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
-    
+
     const fetchProfile = async () => {
         try {
             const res = await candidateService.getProfile();
@@ -238,7 +239,7 @@ const CandidateDashboard = () => {
     };
 
     useEffect(() => { fetchProfile(); }, []);
-    
+
     // Close mobile menu on route change
     useEffect(() => { setIsMobileOpen(false); }, [location.pathname]);
 
@@ -260,10 +261,11 @@ const CandidateDashboard = () => {
             ]
         },
         {
-            title: "INTELLIGENCE 🚀",
+            title: "INTELLIGENCE ðŸš€",
             items: [
                 { path: 'command-center', label: 'Command Center', icon: <Target size={20} /> },
                 { path: 'career-intelligence', label: 'Career Intelligence', icon: <Lightbulb size={20} /> },
+                { path: 'interview-coach', label: 'Interview Coach', icon: <Bot size={20} /> },
                 { path: 'roadmap', label: 'Skill Roadmap', icon: <Map size={20} /> },
                 { path: 'path', label: 'Career Path', icon: <TrendingUp size={20} /> }
             ]
@@ -310,16 +312,16 @@ const CandidateDashboard = () => {
                     <h2>CareerMind</h2>
                     <button className="mobile-close" onClick={() => setIsMobileOpen(false)}><X size={24} /></button>
                 </div>
-                
+
                 <div className="sidebar-nav-container">
                     {navGroups.map((group, idx) => (
                         <div className="nav-group" key={idx}>
                             <h4 className="nav-group-title">{group.title}</h4>
                             <nav className="nav-menu">
                                 {group.items.map(item => (
-                                    <Link 
-                                        key={item.path} 
-                                        to={`/candidate/${item.path}`} 
+                                    <Link
+                                        key={item.path}
+                                        to={`/candidate/${item.path}`}
                                         className={`nav-link-premium ${activeNav === item.path ? 'active' : ''}`}
                                     >
                                         <div className="nav-icon">{item.icon}</div>
@@ -386,25 +388,26 @@ const CandidateDashboard = () => {
                     <div className="content-container">
                         <Routes>
                             <Route path="/" element={<DashboardOverview />} />
-                            
+
                             {/* Profile features */}
                             <Route path="profile" element={<ProfileSection initialData={profile} fetchProfile={fetchProfile} />} />
                             <Route path="skills" element={<SkillsSection skills={profile?.skills || []} fetchProfile={fetchProfile} />} />
                             <Route path="education" element={<EducationSection educations={profile?.educations || []} fetchProfile={fetchProfile} />} />
                             <Route path="experience" element={<PlaceholderFeature title="Experience Editor" icon={<Briefcase size={48} color="#8b5cf6" />} />} />
-                            
+
                             {/* Jobs */}
                             <Route path="jobs" element={<CandidateJobs />} />
                             <Route path="jobs/:id" element={<CandidateJobDetails />} />
                             <Route path="applications" element={<CandidateApplications />} />
                             <Route path="saved-jobs" element={<CandidateSavedJobs />} />
-                            
+
                             {/* Intelligence */}
                             <Route path="command-center" element={<CareerCommandCenter />} />
                             <Route path="career-intelligence" element={<CareerIntelligence />} />
+                            <Route path="interview-coach" element={<CareerInterview />} />
                             <Route path="roadmap" element={<PlaceholderFeature title="Interactive Skill Roadmap" icon={<Map size={48} color="#10b981" />} />} />
                             <Route path="path" element={<PlaceholderFeature title="Career Path Simulator" icon={<TrendingUp size={48} color="#3b82f6" />} />} />
-                            
+
                             {/* Tools */}
                             <Route path="resume" element={<ResumeIntelligence />} />
                             <Route path="assistant" element={<PlaceholderFeature title="AI Interview Prep" icon={<Bot size={48} color="#ef4444" />} />} />
