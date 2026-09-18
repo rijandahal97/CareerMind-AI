@@ -1,4 +1,4 @@
-﻿using CareerMind.Infrastructure.Data;
+using CareerMind.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -52,6 +52,7 @@ builder.Services.AddScoped<CareerMind.Application.Interfaces.ICareerPathIntellig
 builder.Services.AddScoped<CareerMind.Application.Interfaces.IResumeIntelligenceService, CareerMind.Infrastructure.Services.ResumeIntelligenceService>();
 builder.Services.AddScoped<CareerMind.Application.Interfaces.ICareerCommandCenterService, CareerMind.Infrastructure.Services.CareerCommandCenterService>();
 builder.Services.AddScoped<CareerMind.Application.Interfaces.ICareerInterviewService, CareerMind.Infrastructure.Services.CareerInterviewService>();
+builder.Services.AddScoped<CareerMind.Application.Interfaces.IApplicationOptimizationService, CareerMind.Infrastructure.Services.ApplicationOptimizationService>();
 
 // Configure Swagger
 builder.Services.AddEndpointsApiExplorer();

@@ -1,4 +1,4 @@
-﻿using CareerMind.Domain.Entities;
+using CareerMind.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -35,6 +35,9 @@ namespace CareerMind.Infrastructure.Data
         public DbSet<InterviewSession> InterviewSessions { get; set; } = null!;
         public DbSet<InterviewQuestion> InterviewQuestions { get; set; } = null!;
         public DbSet<InterviewAnswer> InterviewAnswers { get; set; } = null!;
+
+        public DbSet<ApplicationOptimization> ApplicationOptimizations { get; set; } = null!;
+        public DbSet<ApplicationOptimizationSuggestion> ApplicationOptimizationSuggestions { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -244,6 +247,35 @@ namespace CareerMind.Infrastructure.Data
                 .HasOne(ia => ia.InterviewQuestion)
                 .WithMany(iq => iq.Answers)
                 .HasForeignKey(ia => ia.InterviewQuestionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // ApplicationOptimization Relationships
+            modelBuilder.Entity<ApplicationOptimization>()
+                .HasOne(ao => ao.CandidateProfile)
+                .WithMany()
+                .HasForeignKey(ao => ao.CandidateProfileId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ApplicationOptimization>()
+                .HasOne(ao => ao.Job)
+                .WithMany()
+                .HasForeignKey(ao => ao.JobId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ApplicationOptimization>()
+                .HasOne(ao => ao.Resume)
+                .WithMany()
+                .HasForeignKey(ao => ao.ResumeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ApplicationOptimization>()
+                .HasIndex(ao => new { ao.CandidateProfileId, ao.JobId })
+                .IsUnique();
+
+            modelBuilder.Entity<ApplicationOptimizationSuggestion>()
+                .HasOne(s => s.ApplicationOptimization)
+                .WithMany(ao => ao.Suggestions)
+                .HasForeignKey(s => s.ApplicationOptimizationId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

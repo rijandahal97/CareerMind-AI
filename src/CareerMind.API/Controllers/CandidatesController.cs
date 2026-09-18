@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -24,6 +24,7 @@ namespace CareerMind.API.Controllers
         private readonly ICareerPathIntelligenceService _careerPathIntelligenceService;
         private readonly ICareerCommandCenterService _commandCenterService;
         private readonly ICareerInterviewService _interviewService;
+        private readonly IApplicationOptimizationService _optimizationService;
         private readonly ILogger<CandidatesController> _logger;
 
         public CandidatesController(
@@ -34,6 +35,7 @@ namespace CareerMind.API.Controllers
             ICareerPathIntelligenceService careerPathIntelligenceService,
             ICareerCommandCenterService commandCenterService,
             ICareerInterviewService interviewService,
+            IApplicationOptimizationService optimizationService,
             ILogger<CandidatesController> logger)
         {
             _profileService = profileService;
@@ -43,6 +45,7 @@ namespace CareerMind.API.Controllers
             _careerPathIntelligenceService = careerPathIntelligenceService;
             _commandCenterService = commandCenterService;
             _interviewService = interviewService;
+            _optimizationService = optimizationService;
             _logger = logger;
         }
 
@@ -545,6 +548,105 @@ namespace CareerMind.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error completing interview");
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        // Application Optimizer
+        [HttpPost("me/application-optimizer/{jobId}")]
+        public async Task<IActionResult> OptimizeApplication(Guid jobId)
+        {
+            try
+            {
+                var result = await _optimizationService.OptimizeApplicationAsync(GetUserId(), jobId);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error optimizing application");
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        [HttpGet("me/application-optimizer")]
+        public async Task<IActionResult> GetApplicationOptimizations()
+        {
+            try
+            {
+                var results = await _optimizationService.GetApplicationOptimizationsAsync(GetUserId());
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting application optimizations");
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        [HttpGet("me/application-optimizer/{jobId}")]
+        public async Task<IActionResult> GetApplicationOptimization(Guid jobId)
+        {
+            try
+            {
+                var result = await _optimizationService.GetApplicationOptimizationAsync(GetUserId(), jobId);
+                if (result == null) return NotFound("Optimization not found.");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting application optimization");
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        [HttpGet("me/application-optimizer/{jobId}/readiness")]
+        public async Task<IActionResult> GetApplicationReadiness(Guid jobId)
+        {
+            try
+            {
+                var result = await _optimizationService.GetApplicationReadinessAsync(GetUserId(), jobId);
+                if (result == null) return NotFound("Readiness not found.");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting application readiness");
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        [HttpGet("me/application-optimizer/{jobId}/cover-letter")]
+        public async Task<IActionResult> GetApplicationCoverLetter(Guid jobId)
+        {
+            try
+            {
+                var result = await _optimizationService.GetApplicationCoverLetterAsync(GetUserId(), jobId);
+                if (result == null) return NotFound("Cover letter not found.");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting application cover letter");
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        [HttpPut("me/application-optimizer/{jobId}/suggestions/{suggestionId}")]
+        public async Task<IActionResult> UpdateApplicationSuggestion(Guid jobId, Guid suggestionId, [FromBody] CareerMind.Application.DTOs.ApplicationOptimization.UpdateApplicationSuggestionRequest request)
+        {
+            try
+            {
+                var result = await _optimizationService.UpdateSuggestionAsync(GetUserId(), jobId, suggestionId, request);
+                if (!result) return NotFound("Suggestion not found.");
+                return Ok(new { Success = true });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating application suggestion");
                 return BadRequest(new { Message = ex.Message });
             }
         }

@@ -94,6 +94,9 @@ const CandidateJobDetails = () => {
                 <button onClick={handleApply} disabled={applying} style={{ padding: '12px 24px', background: '#0066cc', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
                     {applying ? 'Applying...' : 'Apply Now'}
                 </button>
+                <button onClick={() => navigate(`/candidate/optimizer/${id}`)} style={{ padding: '12px 24px', background: '#3b82f6', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
+                    Optimize Application
+                </button>
                 <button onClick={handleSave} disabled={saving} style={{ padding: '12px 24px', background: '#eee', color: '#333', border: '1px solid #ccc', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
                     {saving ? 'Saving...' : 'Save Job'}
                 </button>

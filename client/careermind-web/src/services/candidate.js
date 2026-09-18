@@ -1,4 +1,4 @@
-﻿import api from './api';
+import api from './api';
 
 export const candidateService = {
     getProfile: () => api.get('/candidates/me/profile'),
@@ -47,5 +47,12 @@ export const candidateService = {
     getInterview: (sessionId) => api.get(`/candidates/me/interviews/${sessionId}`),
     submitInterviewAnswer: (sessionId, questionId, data) => api.post(`/candidates/me/interviews/${sessionId}/answers?questionId=${questionId}`, data),
     getInterviewReadiness: (sessionId) => api.get(`/candidates/me/interviews/${sessionId}/readiness`),
-    completeInterview: (sessionId) => api.post(`/candidates/me/interviews/${sessionId}/complete`)
+    completeInterview: (sessionId) => api.post(`/candidates/me/interviews/${sessionId}/complete`),
+
+    createApplicationOptimization: (jobId) => api.post(`/candidates/me/application-optimizer/${jobId}`),
+    getApplicationOptimizations: () => api.get('/candidates/me/application-optimizer'),
+    getApplicationOptimization: (jobId) => api.get(`/candidates/me/application-optimizer/${jobId}`),
+    getApplicationReadiness: (jobId) => api.get(`/candidates/me/application-optimizer/${jobId}/readiness`),
+    getApplicationCoverLetter: (jobId) => api.get(`/candidates/me/application-optimizer/${jobId}/cover-letter`),
+    updateApplicationSuggestion: (jobId, suggestionId, data) => api.put(`/candidates/me/application-optimizer/${jobId}/suggestions/${suggestionId}`, data)
 };

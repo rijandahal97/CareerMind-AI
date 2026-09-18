@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import { candidateService } from '../../services/candidate';
 import { useAuth } from '../../context/AuthContext';
@@ -14,6 +14,7 @@ import CareerIntelligence from './CareerIntelligence';
 import ResumeIntelligence from './ResumeIntelligence';
 import CareerCommandCenter from './CareerCommandCenter';
 import CareerInterview from './CareerInterview';
+import ApplicationOptimizer from './ApplicationOptimizer';
 
 // Icons
 import {
@@ -267,7 +268,8 @@ const CandidateDashboard = () => {
                 { path: 'career-intelligence', label: 'Career Intelligence', icon: <Lightbulb size={20} /> },
                 { path: 'interview-coach', label: 'Interview Coach', icon: <Bot size={20} /> },
                 { path: 'roadmap', label: 'Skill Roadmap', icon: <Map size={20} /> },
-                { path: 'path', label: 'Career Path', icon: <TrendingUp size={20} /> }
+                { path: 'path', label: 'Career Path', icon: <TrendingUp size={20} /> },
+                { path: 'jobs', label: 'App Optimizer', icon: <FileText size={20} /> } // Directs to jobs where they can pick a job to optimize
             ]
         },
         {
@@ -407,6 +409,7 @@ const CandidateDashboard = () => {
                             <Route path="interview-coach" element={<CareerInterview />} />
                             <Route path="roadmap" element={<PlaceholderFeature title="Interactive Skill Roadmap" icon={<Map size={48} color="#10b981" />} />} />
                             <Route path="path" element={<PlaceholderFeature title="Career Path Simulator" icon={<TrendingUp size={48} color="#3b82f6" />} />} />
+                            <Route path="optimizer/:jobId" element={<ApplicationOptimizer />} />
 
                             {/* Tools */}
                             <Route path="resume" element={<ResumeIntelligence />} />
