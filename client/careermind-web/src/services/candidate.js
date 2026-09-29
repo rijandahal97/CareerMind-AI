@@ -54,5 +54,7 @@ export const candidateService = {
     getApplicationOptimization: (jobId) => api.get(`/candidates/me/application-optimizer/${jobId}`),
     getApplicationReadiness: (jobId) => api.get(`/candidates/me/application-optimizer/${jobId}/readiness`),
     getApplicationCoverLetter: (jobId) => api.get(`/candidates/me/application-optimizer/${jobId}/cover-letter`),
-    updateApplicationSuggestion: (jobId, suggestionId, data) => api.put(`/candidates/me/application-optimizer/${jobId}/suggestions/${suggestionId}`, data)
+    updateApplicationSuggestion: (jobId, suggestionId, data) => api.put(`/candidates/me/application-optimizer/${jobId}/suggestions/${suggestionId}`, data),
+    
+    getCareerAnalytics: () => api.get('/candidates/me/career-analytics')
 };

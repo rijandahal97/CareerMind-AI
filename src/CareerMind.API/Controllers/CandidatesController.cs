@@ -25,6 +25,7 @@ namespace CareerMind.API.Controllers
         private readonly ICareerCommandCenterService _commandCenterService;
         private readonly ICareerInterviewService _interviewService;
         private readonly IApplicationOptimizationService _optimizationService;
+        private readonly ICareerAnalyticsService _analyticsService;
         private readonly ILogger<CandidatesController> _logger;
 
         public CandidatesController(
@@ -36,6 +37,7 @@ namespace CareerMind.API.Controllers
             ICareerCommandCenterService commandCenterService,
             ICareerInterviewService interviewService,
             IApplicationOptimizationService optimizationService,
+            ICareerAnalyticsService analyticsService,
             ILogger<CandidatesController> logger)
         {
             _profileService = profileService;
@@ -46,6 +48,7 @@ namespace CareerMind.API.Controllers
             _commandCenterService = commandCenterService;
             _interviewService = interviewService;
             _optimizationService = optimizationService;
+            _analyticsService = analyticsService;
             _logger = logger;
         }
 
@@ -648,6 +651,26 @@ namespace CareerMind.API.Controllers
             {
                 _logger.LogError(ex, "Error updating application suggestion");
                 return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        [HttpGet("me/career-analytics")]
+        public async Task<IActionResult> GetCareerAnalytics()
+        {
+            try
+            {
+                var userId = GetUserId();
+                var result = await _analyticsService.GetCareerAnalyticsAsync(userId);
+                return Ok(result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting career analytics");
+                return StatusCode(500, new { Message = ex.Message });
             }
         }
     }

@@ -53,6 +53,7 @@ builder.Services.AddScoped<CareerMind.Application.Interfaces.IResumeIntelligence
 builder.Services.AddScoped<CareerMind.Application.Interfaces.ICareerCommandCenterService, CareerMind.Infrastructure.Services.CareerCommandCenterService>();
 builder.Services.AddScoped<CareerMind.Application.Interfaces.ICareerInterviewService, CareerMind.Infrastructure.Services.CareerInterviewService>();
 builder.Services.AddScoped<CareerMind.Application.Interfaces.IApplicationOptimizationService, CareerMind.Infrastructure.Services.ApplicationOptimizationService>();
+builder.Services.AddScoped<CareerMind.Application.Interfaces.ICareerAnalyticsService, CareerMind.Infrastructure.Services.CareerAnalyticsService>();
 
 // Configure Swagger
 builder.Services.AddEndpointsApiExplorer();
