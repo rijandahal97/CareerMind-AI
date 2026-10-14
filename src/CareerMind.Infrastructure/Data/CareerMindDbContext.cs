@@ -39,6 +39,8 @@ namespace CareerMind.Infrastructure.Data
         public DbSet<ApplicationOptimization> ApplicationOptimizations { get; set; } = null!;
         public DbSet<ApplicationOptimizationSuggestion> ApplicationOptimizationSuggestions { get; set; } = null!;
 
+        public DbSet<JobRiskAnalysis> JobRiskAnalyses { get; set; } = null!;
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -276,6 +278,13 @@ namespace CareerMind.Infrastructure.Data
                 .HasOne(s => s.ApplicationOptimization)
                 .WithMany(ao => ao.Suggestions)
                 .HasForeignKey(s => s.ApplicationOptimizationId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // JobRiskAnalysis Relationships
+            modelBuilder.Entity<JobRiskAnalysis>()
+                .HasOne(r => r.CandidateProfile)
+                .WithMany()
+                .HasForeignKey(r => r.CandidateProfileId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

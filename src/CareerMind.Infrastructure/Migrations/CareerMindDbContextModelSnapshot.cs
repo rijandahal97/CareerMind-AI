@@ -927,6 +927,82 @@ namespace CareerMind.Infrastructure.Migrations
                     b.ToTable("JobCategories");
                 });
 
+            modelBuilder.Entity("CareerMind.Domain.Entities.JobRiskAnalysis", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ApplicationInstructions")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("CandidateProfileId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConfidenceNote")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EmployerInformation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Explanation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("JobDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("JobTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RiskCategory")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RiskScore")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SalaryDetails")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TriggeredIndicatorsJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("VerificationStepsJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("WarningSummaryJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CandidateProfileId");
+
+                    b.ToTable("JobRiskAnalyses");
+                });
+
             modelBuilder.Entity("CareerMind.Domain.Entities.JobSkill", b =>
                 {
                     b.Property<Guid>("JobId")
@@ -1552,6 +1628,17 @@ namespace CareerMind.Infrastructure.Migrations
                     b.Navigation("CandidateProfile");
 
                     b.Navigation("Job");
+                });
+
+            modelBuilder.Entity("CareerMind.Domain.Entities.JobRiskAnalysis", b =>
+                {
+                    b.HasOne("CareerMind.Domain.Entities.CandidateProfile", "CandidateProfile")
+                        .WithMany()
+                        .HasForeignKey("CandidateProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CandidateProfile");
                 });
 
             modelBuilder.Entity("CareerMind.Domain.Entities.JobSkill", b =>

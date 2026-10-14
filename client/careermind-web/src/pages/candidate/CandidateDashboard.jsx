@@ -16,11 +16,12 @@ import CareerCommandCenter from './CareerCommandCenter';
 import CareerInterview from './CareerInterview';
 import ApplicationOptimizer from './ApplicationOptimizer';
 import CareerAnalytics from './CareerAnalytics';
+import JobScamDetector from './JobScamDetector';
 
 // Icons
 import {
     LayoutDashboard, User, Briefcase, BookOpen, Star, FileText, Bookmark,
-    Lightbulb, Map, FileStack, TrendingUp, Settings, LogOut, Bell, Search, Menu, X, ChevronDown, Bot, Target, BarChart2
+    Lightbulb, Map, FileStack, TrendingUp, Settings, LogOut, Bell, Search, Menu, X, ChevronDown, Bot, Target, BarChart2, ShieldAlert
 } from 'lucide-react';
 
 const ProfileSection = ({ initialData, fetchProfile }) => {
@@ -271,7 +272,8 @@ const CandidateDashboard = () => {
                 { path: 'interview-coach', label: 'Interview Coach', icon: <Bot size={20} /> },
                 { path: 'roadmap', label: 'Skill Roadmap', icon: <Map size={20} /> },
                 { path: 'path', label: 'Career Path', icon: <TrendingUp size={20} /> },
-                { path: 'jobs', label: 'App Optimizer', icon: <FileText size={20} /> } // Directs to jobs where they can pick a job to optimize
+                { path: 'jobs', label: 'App Optimizer', icon: <FileText size={20} /> }, // Directs to jobs where they can pick a job to optimize
+                { path: 'scam-detector', label: 'Scam Detector', icon: <ShieldAlert size={20} /> }
             ]
         },
         {
@@ -410,6 +412,7 @@ const CandidateDashboard = () => {
                             <Route path="analytics" element={<CareerAnalytics />} />
                             <Route path="career-intelligence" element={<CareerIntelligence />} />
                             <Route path="interview-coach" element={<CareerInterview />} />
+                            <Route path="scam-detector" element={<JobScamDetector />} />
                             <Route path="roadmap" element={<PlaceholderFeature title="Interactive Skill Roadmap" icon={<Map size={48} color="#10b981" />} />} />
                             <Route path="path" element={<PlaceholderFeature title="Career Path Simulator" icon={<TrendingUp size={48} color="#3b82f6" />} />} />
                             <Route path="optimizer/:jobId" element={<ApplicationOptimizer />} />

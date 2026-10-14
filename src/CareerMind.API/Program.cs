@@ -54,6 +54,7 @@ builder.Services.AddScoped<CareerMind.Application.Interfaces.ICareerCommandCente
 builder.Services.AddScoped<CareerMind.Application.Interfaces.ICareerInterviewService, CareerMind.Infrastructure.Services.CareerInterviewService>();
 builder.Services.AddScoped<CareerMind.Application.Interfaces.IApplicationOptimizationService, CareerMind.Infrastructure.Services.ApplicationOptimizationService>();
 builder.Services.AddScoped<CareerMind.Application.Interfaces.ICareerAnalyticsService, CareerMind.Infrastructure.Services.CareerAnalyticsService>();
+builder.Services.AddScoped<CareerMind.Application.Interfaces.IJobRiskAnalysisService, CareerMind.Infrastructure.Services.JobRiskAnalysisService>();
 
 // Configure Swagger
 builder.Services.AddEndpointsApiExplorer();
